@@ -1,3 +1,14 @@
+from parsimonious.grammar import Grammar
+
+grammar = Grammar(
+    """
+    query = name op val 
+    name = ~"[A-z]*"
+    op = "=" / "!=" / ">" / "<" / ">=" / "<="
+    val = 
+    """)
+
+
 def parse(query: str) -> dict:
     """
     Парсит логический запрос в дерево операций
@@ -17,5 +28,7 @@ def parse(query: str) -> dict:
     # При использовании сторонних библиотек парсинга необходимо написать 5-10 ассертов,
     # т.е. проверить как можно больше граничных случаев.
 
-    pass
+    result = grammar.parse(query)
+    print(result)
+
 
