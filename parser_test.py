@@ -33,4 +33,4 @@ def test_parse_exp_ge_05():
     parse('Стаж<=.5')
 
 def test_parse_age_gt_25_or_exp_gt_05():
-    parse('Возраст>25 OR Стаж>.5')
+    parse('Возраст>25 OR Возраст!=25')

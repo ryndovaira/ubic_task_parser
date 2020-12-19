@@ -1,18 +1,21 @@
 from parsimonious.grammar import Grammar
-
 grammar = Grammar(
     r"""
-    query = subquery*
-    subquery = lb name op val rb
-    lb = "(" / ""
-    rb = ")" / ""
+    query = (expr lop expr) / expr
+
+    lop = "AND" / "OR"
+    expr = (lb name op val rb) / (name op val)
+    lb = "("
+    rb = ")" 
     name = word
-    op = "=" / "!=" / ">=" / "<=" / ">" / "<" / "AND" / "OR"
-    val = number / word
-    word = ~"\w+"
+    
+    op = "=" / "!=" / ">=" / "<=" / ">" / "<"
+    val = number / word 
+    word = " "* ~"\w+"
     number = hs? ~"[-.e\d]+" hs?
     hs = ~"[\t\ ]*"
     """)
+
 
 
 # grammar = Grammar(
