@@ -1,12 +1,9 @@
 from parsimonious.grammar import Grammar
 grammar = Grammar(
     r"""
-    query = (expr lop expr) / expr
-
+    query = subquery (lop subquery)*
+    subquery = (name op val) / query / ("(" query ")")
     lop = "AND" / "OR"
-    expr = (lb name op val rb) / (name op val)
-    lb = "("
-    rb = ")" 
     name = word
     
     op = "=" / "!=" / ">=" / "<=" / ">" / "<"
@@ -16,7 +13,7 @@ grammar = Grammar(
     hs = ~"[\t\ ]*"
     """)
 
-
+#     subquery = (lb query rb) / (name op val)
 
 # grammar = Grammar(
 #     """

@@ -39,3 +39,7 @@ def test_parse_age_gt_25_or_exp_ne_05():
 
 def test_parse_age_gt_25_and_exp_ne_05():
     parse('Возраст>25 AND Стаж!=0.5')
+
+
+def test_parse_age_gt_25_and_exp_ne_05_or_age_le_60():
+    parse('Возраст>25 AND Стаж!=0.5 OR Возраст<=60')
