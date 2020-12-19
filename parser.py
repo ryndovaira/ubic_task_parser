@@ -2,11 +2,21 @@ from parsimonious.grammar import Grammar
 
 grammar = Grammar(
     """
-    query = name op val 
-    name = ~"[A-z]*"
+    query = subquery
+    subquery = name op val
+    name = ~"[A-zЁёА-я]*"
     op = "=" / "!=" / ">" / "<" / ">=" / "<="
-    val = 
+    val = ~"[0-9]*"
     """)
+
+# grammar = Grammar(
+#     """
+#     query = subquery
+#     subquery = id op literal
+#     id = ~"[A-z]*"
+#     op = "=" / "!=" / ">" / "<" / ">=" / "<="
+#     literal = ~"[A-z]*" / ~"[0-9]*"
+#     """)
 
 
 def parse(query: str) -> dict:

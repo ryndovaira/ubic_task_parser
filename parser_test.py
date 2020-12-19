@@ -11,3 +11,7 @@ def parse_test():
             'right': {'type': 'leaf', 'op': '>', 'id': 'Стаж', 'literal': 0.5}
         }
     }
+
+def test_parse_age_gt_25():
+    res = parse('Возраст>25')
+    pass
