@@ -1,13 +1,19 @@
 from parsimonious.grammar import Grammar
 
 grammar = Grammar(
-    """
-    query = subquery
-    subquery = name op val
-    name = ~"[A-zЁёА-я]*"
-    op = "=" / "!=" / ">" / "<" / ">=" / "<="
-    val = ~"[0-9]*"
+    r"""
+    query = subquery*
+    subquery = lb name op val rb
+    lb = "(" / ""
+    rb = ")" / ""
+    name = word
+    op = "=" / "!=" / ">=" / "<=" / ">" / "<" / "AND" / "OR"
+    val = number / word
+    word = ~"\w+"
+    number = hs? ~"[-.e\d]+" hs?
+    hs = ~"[\t\ ]*"
     """)
+
 
 # grammar = Grammar(
 #     """
@@ -40,5 +46,3 @@ def parse(query: str) -> dict:
 
     result = grammar.parse(query)
     print(result)
-
-
