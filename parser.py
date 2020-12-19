@@ -1,16 +1,16 @@
 from parsimonious.grammar import Grammar
 grammar = Grammar(
     r"""
-    query = subquery (lop subquery)*
-    subquery = (name op val) / query / ("(" query ")")
+    query = subquery (space lop space query)*
+    subquery = (space name space op space val space ) / query / ("(" query ")")
     lop = "AND" / "OR"
     name = word
     
     op = "=" / "!=" / ">=" / "<=" / ">" / "<"
-    val = number / word 
-    word = " "* ~"\w+"
-    number = hs? ~"[-.e\d]+" hs?
-    hs = ~"[\t\ ]*"
+    val = number / word
+    word = ~"(\w+)|(\"\w+\")"
+    number = ~"-?\d*\.\d+" / ~"-?\d+"
+    space = ~"\s*"
     """)
 
 #     subquery = (lb query rb) / (name op val)
