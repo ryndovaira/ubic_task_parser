@@ -46,4 +46,4 @@ def test_parse_age_gt_25_and_exp_ne_05_or_age_le_60():
 
 
 def test_string_val():
-    assert parse('Пол="М"')
+    parse('Пол="М"')
