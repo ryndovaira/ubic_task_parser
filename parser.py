@@ -2,7 +2,7 @@ from parsimonious.grammar import Grammar
 grammar = Grammar(
     r"""
     all_query = (lb? query rb?) / (lb? all_query rb?)
-    query = subquery (space? lop space? subquery)*
+    query = lb? subquery (space? lop space? subquery)* rb?
     subquery = (lb? space? name space? op space? val space? rb?) / (lb? query rb?)
     lb        = "("
     rb        = ")" 

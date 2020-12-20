@@ -66,12 +66,25 @@ def test_example_with_brackets_1():
 
 
 def test_example_with_brackets_2():
-    parse('((Пол="М" AND Рост=1.86) AND (Возраст>25 OR Стаж>.5))')
+    parse('(Пол="М" AND Рост=1.86 AND Возраст>25 OR Стаж>.5)')
 
 
 def test_example_with_brackets_3():
-    parse('((((Пол="М" AND Рост=1.86) AND (Возраст>25 OR Стаж>.5))))')
+    parse('((Пол="М" AND Рост=1.86) AND (Возраст>25 OR Стаж>.5))')
 
 
 def test_example_with_brackets_4():
+    parse('((((Пол="М" AND Рост=1.86) AND (Возраст>25 OR Стаж>.5))))')
+
+
+def test_example_with_brackets_5():
     parse('((((((Пол="М" AND Рост=1.86))) AND ((Возраст>25 OR Стаж>.5)))))')
+
+
+def test_example_with_brackets_6():
+    parse('((((((Пол="М" AND Рост=1.86))) AND Возраст>25 OR Стаж>.5)))')
+
+
+def test_example_with_brackets_7():
+    # parse('((Пол="М" AND ((Рост=1.86) AND (Возраст>25))) OR Стаж>.5)')
+    parse('(Пол="М" AND ((Рост=1.86) AND (Возраст>25))) OR Стаж>.5')
