@@ -1,6 +1,7 @@
 from parsimonious.grammar import Grammar
 grammar = Grammar(
     r"""
+    all_query = lb? query rb?
     query = subquery (space? lop space? subquery)*
     subquery = lb? space? name space? op space? val space? rb?
     lb        = "("

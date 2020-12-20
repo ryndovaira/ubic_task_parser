@@ -63,3 +63,7 @@ def test_example_with_brackets_0():
 
 def test_example_with_brackets_1():
     parse('(Пол="М" AND Рост=1.86) AND (Возраст>25 OR Стаж>.5)')
+
+
+def test_example_with_brackets_2():
+    parse('((Пол="М" AND Рост=1.86) AND (Возраст>25 OR Стаж>.5))')
