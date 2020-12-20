@@ -86,5 +86,4 @@ def test_example_with_brackets_6():
 
 
 def test_example_with_brackets_7():
-    # parse('((Пол="М" AND ((Рост=1.86) AND (Возраст>25))) OR Стаж>.5)')
-    parse('(Пол="М" AND ((Рост=1.86) AND (Возраст>25))) OR Стаж>.5')
+    parse('((Пол="М" AND ((Рост=1.86) AND (Возраст>25))) OR Стаж>.5)')
