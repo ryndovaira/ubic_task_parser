@@ -49,9 +49,17 @@ def test_string_val():
     parse('Пол="М"')
 
 
-def test_example():
+def test_example_without_brackets_3():
+    parse('Пол="М" AND Возраст>25 OR Стаж>.5')
+
+
+def test_example_without_brackets_5():
+    parse('Пол="М" AND Возраст>25 OR Стаж>.5 AND Рост=1.86 OR Имя="Вася"')
+
+
+def test_example_with_brackets_0():
     parse('Пол="М" AND (Возраст>25 OR Стаж>.5)')
 
 
-def test_example_without_brackets():
-    parse('Пол="М" AND Возраст>25 OR Стаж>.5')
+def test_example_with_brackets_1():
+    parse('(Пол="М" AND Рост=1.86) AND (Возраст>25 OR Стаж>.5)')

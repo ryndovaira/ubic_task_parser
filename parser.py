@@ -1,8 +1,8 @@
 from parsimonious.grammar import Grammar
 grammar = Grammar(
     r"""
-    query = subquery (space? lop space? lb? subquery rb?)*
-    subquery = space? name space? op space? val space?
+    query = subquery (space? lop space? subquery)*
+    subquery = lb? space? name space? op space? val space? rb?
     lb        = "("
     rb        = ")" 
     lop = "AND" / "OR"
