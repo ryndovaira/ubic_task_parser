@@ -55,10 +55,16 @@ def parse(query: str) -> dict:
     # При использовании сторонних библиотек парсинга необходимо написать 5-10 ассертов,
     # т.е. проверить как можно больше граничных случаев.
 
-    query = query.replace('=', '==')
-    query = query.replace('AND', 'and')
-    query = query.replace('OR', 'or')
-    result_tree = ast.parse(query, mode='exec')
+    fixed_query = query.replace('>=', 'ge')
+    fixed_query = fixed_query.replace('<=', 'le')
+    fixed_query = fixed_query.replace('!=', 'ne')
+    fixed_query = fixed_query.replace('=', '==')
+    fixed_query = fixed_query.replace('ge', '>=')
+    fixed_query = fixed_query.replace('le', '<=')
+    fixed_query = fixed_query.replace('ne', '!=')
+    fixed_query = fixed_query.replace('AND', 'and')
+    fixed_query = fixed_query.replace('OR', 'or')
+    result_tree = ast.parse(fixed_query, mode='exec')
     result = parse_tree(result_tree.body[0].value)
 
     with open(f"{query}.json", "w") as outfile:     # TODO
