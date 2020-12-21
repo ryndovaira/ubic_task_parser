@@ -9,10 +9,10 @@ grammar = Grammar(
     lb        = "("
     rb        = ")" 
     lop = "AND" / "OR"
-    id = word
+    id = ~"(\w+)"
     op = "=" / "!=" / ">=" / "<=" / ">" / "<"
-    literal = number / word
-    word = ~"(\w+)|(\"\w+\")"
+    literal = number / string
+    string = ~"(\"\w+\")"
     number = ~"-?\d*\.\d+" / ~"-?\d+"
     space = ~"\s+"
     """)
@@ -23,6 +23,7 @@ class ParExprVisitor(NodeVisitor):
     def __init__(self):
         self.depth = 0
         self.par_expr = []
+        self.tree = {}
 
     def visit_all_query(self, node, visited_children):
         # if self.depth == 0:
@@ -38,6 +39,9 @@ class ParExprVisitor(NodeVisitor):
         return node.text
 
     def visit_id(self, node, visited_children):
+        return node.text
+
+    def visit_literal(self, node, visited_children):
         return node.text
 
     def visit_lop(self, node, visited_children):
