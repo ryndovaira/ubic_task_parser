@@ -19,13 +19,20 @@ op_types = {
 def parse_tree(tree) -> dict:
     dict_tmp = {}
     if isinstance(tree, ast.BoolOp):
-        dict_tmp['op'] = lop_types[type(tree.op)]
+        try:
+            dict_tmp['op'] = lop_types[type(tree.op)]
+        except AttributeError as ex_info:
+            raise ValueError('Query contains wrong operator(s)')
 
     elif isinstance(tree, ast.Compare):
         dict_tmp['op'] = op_types[type(tree.ops[0])]
 
         dict_tmp['id'] = tree.left.id
+        if len(tree.comparators) != 1:
+            raise ValueError('Query contains wrong operator(s)')
         dict_tmp['literal'] = tree.comparators[0].value
+    else:
+        raise ValueError('Query contains wrong operator(s)')
 
     if hasattr(tree, 'values'):
         dict_tmp['type'] = 'node'

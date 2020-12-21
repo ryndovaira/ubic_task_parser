@@ -1,3 +1,5 @@
+import pytest
+
 from parser_ast import parse
 
 
@@ -278,3 +280,27 @@ def test_example_and_or_brackets_3():
             "type": "leaf"
         }
     }
+
+
+def test_example_exception_brackets_1():
+    with pytest.raises(SyntaxError) as ex_info:
+        parse('(Пол="М")) AND Рост=1.86')
+    assert ex_info.value.args[0] == "unmatched ')'"
+
+
+def test_example_exception_brackets_2():
+    with pytest.raises(SyntaxError) as ex_info:
+        parse('(Пол="М") (AND Рост=1.86)')
+    assert ex_info.value.args[0] == "invalid syntax"
+
+
+def test_example_exception_lop_plus():
+    with pytest.raises(ValueError) as ex_info:
+        parse('Пол="М" + Рост=1.86')
+    assert ex_info.value.args[0] == "Query contains wrong operator(s)"
+
+
+def test_example_exception_op_plus():
+    with pytest.raises(ValueError) as ex_info:
+        parse('Пол+"М" AND Рост=1.86')
+    assert ex_info.value.args[0] == "Query contains wrong operator(s)"
