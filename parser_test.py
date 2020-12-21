@@ -1,39 +1,48 @@
 from parser_ast import parse
 
 
-def test_parse_age_gt_25():
+def test_parse_int_gt():
     assert parse('Возраст>25') == {'type': 'leaf',
                                    'op': '>',
                                    'id': 'Возраст',
                                    'literal': 25}
 
 
-def test_parse_age_ge_25():
+def test_parse_int_ge():
     assert parse('Возраст>=25') == {'type': 'leaf',
                                     'op': '>=',
                                     'id': 'Возраст',
                                     'literal': 25}
 
 
-def test_parse_age_eq_25():
+def test_parse_int_eq():
     assert parse('Возраст=25') == {'type': 'leaf',
                                    'op': '=',
                                    'id': 'Возраст',
                                    'literal': 25}
 
 
-def test_parse_age_ne_25():
+def test_parse_int_ne():
     assert parse('Возраст!=25') == {'type': 'leaf',
                                     'op': '!=',
                                     'id': 'Возраст',
                                     'literal': 25}
 
 
-def test_parse_exp_ge_05():
+def test_parse_float():
     assert parse('Стаж<=.5') == {'type': 'leaf',
                                  'op': '<=',
                                  'id': 'Стаж',
                                  'literal': 0.5}
+
+
+def test_parse_string():
+    assert parse('Пол="М"') == {
+        "op": "=",
+        "id": "Пол",
+        "literal": "М",
+        "type": "leaf"
+    }
 
 
 def test_parse_age_gt_25_or_exp_ne_05():
@@ -100,15 +109,6 @@ def test_parse_age_gt_25_and_exp_ne_05_or_age_le_60():
             "literal": 60,
             "type": "leaf"
         }
-    }
-
-
-def test_string_val():
-    assert parse('Пол="М"') == {
-        "op": "=",
-        "id": "Пол",
-        "literal": "М",
-        "type": "leaf"
     }
 
 
