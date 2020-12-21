@@ -380,5 +380,10 @@ def test_parse_exception_minus_string():
     assert ex_info.value.args[0] == "bad operand type for unary -: 'str'"
 
 
+def test_parse_mul_string():
+    with pytest.raises(ValueError) as ex_info:
+        parse('Пол="М"*2 AND Рост=1.86')
+    assert ex_info.value.args[0] == "Query contains wrong operator(s)"
+
 def test_parse_empty():
     assert parse('') == {}
