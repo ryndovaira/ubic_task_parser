@@ -1,30 +1,54 @@
+from parsimonious import NodeVisitor
 from parsimonious.grammar import Grammar
+
 grammar = Grammar(
     r"""
     all_query = (lb? query rb?) / (lb? all_query rb?)
     query = lb? subquery (space? lop space? subquery)* rb?
-    subquery = (lb? space? name space? op space? val space? rb?) / (lb? query rb?)
+    subquery = (lb? space? id space? op space? literal space? rb?) / (lb? query rb?)
     lb        = "("
     rb        = ")" 
     lop = "AND" / "OR"
-    name = word
+    id = word
     op = "=" / "!=" / ">=" / "<=" / ">" / "<"
-    val = number / word
+    literal = number / word
     word = ~"(\w+)|(\"\w+\")"
     number = ~"-?\d*\.\d+" / ~"-?\d+"
     space = ~"\s+"
     """)
 
-#     subquery = (lb query rb) / (name op val)
 
-# grammar = Grammar(
-#     """
-#     query = subquery
-#     subquery = id op literal
-#     id = ~"[A-z]*"
-#     op = "=" / "!=" / ">" / "<" / ">=" / "<="
-#     literal = ~"[A-z]*" / ~"[0-9]*"
-#     """)
+class ParExprVisitor(NodeVisitor):
+
+    def __init__(self):
+        self.depth = 0
+        self.par_expr = []
+
+    def visit_all_query(self, node, visited_children):
+        # if self.depth == 0:
+        #     self.par_expr.append(node.text)
+        return node.text
+
+    def visit_query(self, node, visited_children):
+        # self.depth += 1
+        return node.text
+
+    def visit_subquery(self, node, visited_children):
+        # self.depth -= 1
+        return node.text
+
+    def visit_id(self, node, visited_children):
+        return node.text
+
+    def visit_lop(self, node, visited_children):
+        return node.text
+
+    def visit_op(self, node, visited_children):
+        return node.text
+
+    def generic_visit(self, node, visited_children):
+        # return self.par_expr
+        return node.text
 
 
 def parse(query: str) -> dict:
@@ -48,3 +72,8 @@ def parse(query: str) -> dict:
 
     result = grammar.parse(query)
     print(result)
+
+    visitor = ParExprVisitor()
+    return visitor.visit(result)
+    # for expr in visitor.visit(result):
+    #     print(expr)

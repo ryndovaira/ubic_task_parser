@@ -16,6 +16,12 @@ from parser import parse
 def test_parse_age_gt_25():
     parse('Возраст>25')
 
+def test_parse_age_gt_25_assert():
+    assert parse('Возраст>25') == {'type': 'node',
+                                   'op': '>',
+                                   'id': 'Возраст',
+                                   'literal': 25}
+
 
 def test_parse_age_ge_25():
     parse('Возраст>=25')
