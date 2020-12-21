@@ -1,6 +1,12 @@
 import ast
 import json
 
+lop_types = {
+    ast.And: 'AND',
+    ast.Or: 'OR'
+}
+
+
 op_types = {
     ast.Eq: '=',
     ast.Gt: '>',
@@ -14,9 +20,9 @@ op_types = {
 def parse_tree(tree) -> dict:
     dict_tmp = {}
     if isinstance(tree, ast.BoolOp):
-        dict_tmp['op'] = 'AND' if isinstance(tree.op, ast.And) else 'OR'
-    elif isinstance(tree, ast.Compare):
+        dict_tmp['op'] = lop_types[type(tree.op)]
 
+    elif isinstance(tree, ast.Compare):
         dict_tmp['op'] = op_types[type(tree.ops[0])]
 
         dict_tmp['id'] = tree.left.id
