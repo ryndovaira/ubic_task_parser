@@ -1,101 +1,66 @@
 import ast
-from ast2json import ast2json
+import json
 
-class AnalysisNodeVisitor(ast.NodeVisitor):
-    def visit_BinOp(self, node):
-        print('Node type: BinOp and fields: ', node._fields)
-        ast.NodeVisitor.generic_visit(self, node)
-
-    def visit_Expr(self, node):
-        print('Node type: Expr and fields: ', node._fields)
-        ast.NodeVisitor.generic_visit(self, node)
-
-    def visit_Num(self, node):
-        print('Node type: Num and fields: ', node._fields)
-
-    def visit_Name(self, node):
-        print('Node type: Name and fields: ', node._fields)
-        ast.NodeVisitor.generic_visit(self, node)
-
-    def visit_Str(self, node):
-        print('Node type: Str and fields: ', node._fields)
-
-
-
-import pprint
-import re
-
-type_lookup = {
-    ast.Module: 'Module',
-    ast.FunctionDef: 'Function',
-    ast.ClassDef: 'Class'
+op_types = {
+    ast.Eq: '=',
+    ast.Gt: '>',
+    ast.GtE: '>=',
+    ast.Lt: '<',
+    ast.LtE: '<=',
+    ast.NotEq: '!='
 }
-pattern = re.compile('[\W_]+')
-stopwords = [
-    'the','of','and','to','in','be','will','for','on','is', \
-    'with', 'by', 'as', 'this', 'are', 'from', 'that', 'or', \
-    'at', 'been', 'an', 'was', 'were', 'have', 'has', 'it', ''
-]
 
-def parse_tree(node):
+
+def parse_tree(tree) -> dict:
+    dict_tmp = {}
+    if isinstance(tree, ast.BoolOp):
+        dict_tmp['op'] = 'AND' if isinstance(tree.op, ast.And) else 'OR'
+    elif isinstance(tree, ast.Compare):
+
+        dict_tmp['op'] = op_types[type(tree.ops[0])]
+
+        dict_tmp['id'] = tree.left.id
+        dict_tmp['literal'] = tree.comparators[0].value
+
+    if hasattr(tree, 'values'):
+        dict_tmp['type'] = 'node'
+        dict_tmp['left'] = parse_tree(tree.values[0])
+        dict_tmp['right'] = parse_tree(tree.values[1])
+    elif hasattr(tree, 'value'):
+        dict_tmp['left'] = parse_tree(tree.value)  # TODO
+    else:
+        dict_tmp['type'] = 'leaf'
+
+    print()
+
+    return dict_tmp
+
+
+def parse(query: str) -> dict:
     """
-    Uses the stack to navigate our parse tree and discover Module, Classes,
-    and Functions doc strings and all other comments.
+    Парсит логический запрос в дерево операций
+    @param query: логический запрос вида 'Пол="М" AND (Возраст>25 OR Стаж>5)'.
+    Поддерживаемые операции сравнения: = != > < >= <=
+    Поддерживаемые логические операции: AND OR, приоритет одинаковый, группировка скобками
+    Поддерживаемые типы литералов: int float str (двойные кавычки внутри строки не допускаются)
+    @return: словарь, содержащий дерево операций (см. ассерты)
+    Поддерживаемые типы узлов (type):
+    leaf - узел, представляющий операцию сравнения
+    node - узел, представляющий логическую операцию, имеет два подузла - left, right
     """
 
-    tree = dict(
-        type=type_lookup[type(node)],
-        name=node.name if 'name' in node.__dict__ else __file__.split('.')[0],
-        doc=ast.get_docstring(node),
-        children=[]
-    )
+    # Необходимо написать функцию, пользуясь любыми библиотеками или без них.
+    # Также необходимо написать 3-5 ассертов на разные граничные случаи:
+    # разную расстановку скобок, синтаксические ошибки в выражении и т.п.
+    # При использовании сторонних библиотек парсинга необходимо написать 5-10 ассертов,
+    # т.е. проверить как можно больше граничных случаев.
 
-    for child in node.body:
+    query = query.replace('=', '==')
+    query = query.replace('AND', 'and')
+    query = query.replace('OR', 'or')
+    result_tree = ast.parse(query, mode='exec')
+    result = parse_tree(result_tree.body[0].value)
 
-        if type(child) not in [ast.Module, ast.FunctionDef, ast.ClassDef]:
-            continue
-
-        tree['children'].append(parse_tree(child))
-
-    return tree
-
-
-def tokenize(text):
-    """
-    Takes a string and tokenizes it into terms
-    """
-
-    output = []
-    if not text:
-        return output
-
-    for term in text.lower().split(' '):
-
-        term = pattern.sub('', term)
-        if term in stopwords:
-            continue
-
-        output.append(term)
-
-    return output
-
-
-def get_terms(node):
-    terms = tokenize(node['doc'])
-    for child in node['children']:
-        child_terms = get_terms(child)
-        unique_terms = [term for term in child_terms if term not in terms]
-        terms.extend(unique_terms)
-
-    return terms
-
-pt = ast.parse("a==5 and b==88", mode='exec')
-print(ast2json(pt))
-# tree = parse_tree(pt)
-# terms = get_terms(tree)
-
-# pp = pprint.PrettyPrinter(indent=4)
-# pp.pprint(tree)
-# pp.pprint(terms)
-# v = AnalysisNodeVisitor()
-# v.visit(pt)
+    with open(f"{query}.json", "w") as outfile:     # TODO
+        json.dump(result, outfile, indent=4, ensure_ascii=False)
+    return result
