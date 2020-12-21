@@ -300,7 +300,13 @@ def test_example_exception_lop_plus():
     assert ex_info.value.args[0] == "Query contains wrong operator(s)"
 
 
-def test_example_exception_op_plus():
+def test_example_exception_op_plus_minus():
     with pytest.raises(ValueError) as ex_info:
-        parse('Пол+"М" AND Рост=1.86')
+        parse('Пол+"М" AND Рост-1.86')
     assert ex_info.value.args[0] == "Query contains wrong operator(s)"
+
+
+def test_example_exception_eq():
+    with pytest.raises(SyntaxError) as ex_info:
+        parse('Пол=="М" AND Рост=1.86')
+    assert ex_info.value.args[0] == "invalid syntax"

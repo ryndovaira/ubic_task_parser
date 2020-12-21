@@ -47,7 +47,6 @@ def parse_tree(tree) -> dict:
 
     return dict_tmp
 
-
 def fix_query(query: str) -> str:
     fixed_query = query.replace('>=', 'ge').replace('<=', 'le').replace('!=', 'ne')
 
