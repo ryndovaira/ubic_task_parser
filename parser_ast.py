@@ -6,7 +6,6 @@ lop_types = {
     ast.Or: 'OR'
 }
 
-
 op_types = {
     ast.Eq: '=',
     ast.Gt: '>',
@@ -42,6 +41,17 @@ def parse_tree(tree) -> dict:
     return dict_tmp
 
 
+def fix_query(query: str) -> str:
+    fixed_query = query.replace('>=', 'ge').replace('<=', 'le').replace('!=', 'ne')
+
+    fixed_query = fixed_query.replace('=', '==')
+
+    fixed_query = fixed_query.replace('ge', '>=').replace('le', '<=').replace('ne', '!=')
+
+    fixed_query = fixed_query.replace('AND', 'and').replace('OR', 'or')
+    return fixed_query
+
+
 def parse(query: str) -> dict:
     """
     Парсит логический запрос в дерево операций
@@ -61,18 +71,10 @@ def parse(query: str) -> dict:
     # При использовании сторонних библиотек парсинга необходимо написать 5-10 ассертов,
     # т.е. проверить как можно больше граничных случаев.
 
-    fixed_query = query.replace('>=', 'ge')
-    fixed_query = fixed_query.replace('<=', 'le')
-    fixed_query = fixed_query.replace('!=', 'ne')
-    fixed_query = fixed_query.replace('=', '==')
-    fixed_query = fixed_query.replace('ge', '>=')
-    fixed_query = fixed_query.replace('le', '<=')
-    fixed_query = fixed_query.replace('ne', '!=')
-    fixed_query = fixed_query.replace('AND', 'and')
-    fixed_query = fixed_query.replace('OR', 'or')
+    fixed_query = fix_query(query)
     result_tree = ast.parse(fixed_query, mode='exec')
     result = parse_tree(result_tree.body[0].value)
 
-    with open(f"{query}.json", "w") as outfile:     # TODO
+    with open(f"{query}.json", "w") as outfile:  # TODO
         json.dump(result, outfile, indent=4, ensure_ascii=False)
     return result
