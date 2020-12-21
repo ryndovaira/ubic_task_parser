@@ -47,6 +47,7 @@ def parse_tree(tree) -> dict:
 
     return dict_tmp
 
+
 def fix_query(query: str) -> str:
     fixed_query = query.replace('>=', 'ge').replace('<=', 'le').replace('!=', 'ne')
 
@@ -76,6 +77,9 @@ def parse(query: str) -> dict:
     # разную расстановку скобок, синтаксические ошибки в выражении и т.п.
     # При использовании сторонних библиотек парсинга необходимо написать 5-10 ассертов,
     # т.е. проверить как можно больше граничных случаев.
+
+    if len(query) == 0:
+        return {}
 
     fixed_query = fix_query(query)
     result_tree = ast.parse(fixed_query, mode='exec')

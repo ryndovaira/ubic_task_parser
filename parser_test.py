@@ -310,3 +310,19 @@ def test_example_exception_eq():
     with pytest.raises(SyntaxError) as ex_info:
         parse('Пол=="М" AND Рост=1.86')
     assert ex_info.value.args[0] == "invalid syntax"
+
+
+def test_example_exception_dict():
+    with pytest.raises(SyntaxError) as ex_info:
+        parse('{Пол=="М"} AND Рост=1.86')
+    assert ex_info.value.args[0] == "invalid syntax"
+
+
+def test_example_exception_list():
+    with pytest.raises(SyntaxError) as ex_info:
+        parse('Пол=="М" AND [Рост=1.86]')
+    assert ex_info.value.args[0] == "invalid syntax"
+
+
+def test_example_empty():
+    assert parse('') == {}
