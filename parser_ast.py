@@ -1,5 +1,4 @@
 import ast
-import json
 
 lop_types = {
     ast.And: 'AND',
@@ -85,6 +84,4 @@ def parse(query: str) -> dict:
     result_tree = ast.parse(fixed_query, mode='exec')
     result = parse_tree(result_tree.body[0].value)
 
-    with open(f"{query}.json", "w") as outfile:  # TODO
-        json.dump(result, outfile, indent=4, ensure_ascii=False)
     return result
