@@ -385,5 +385,6 @@ def test_parse_mul_string():
         parse('Пол="М"*2 AND Рост=1.86')
     assert ex_info.value.args[0] == "Query contains wrong operator(s)"
 
+
 def test_parse_empty():
     assert parse('') == {}
