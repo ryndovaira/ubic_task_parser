@@ -153,7 +153,45 @@ def test_parse_and_or_and_or():
     }
 
 
-def test_example_and_or_brackets_0():
+def test_parse_minus_float():
+    assert parse('Пол="-*/М" AND Рост=-1.86') == {
+        'left': {
+            'id': 'Пол',
+            'literal': '-*/М',
+            'op': '=',
+            'type': 'leaf'
+        },
+        'op': 'AND',
+        'right': {
+            'id': 'Рост',
+            'literal': -1.86,
+            'op': '=',
+            'type': 'leaf'
+        },
+        'type': 'node'
+    }
+
+
+def test_parse_plus_float():
+    assert parse('Пол="-*/М" AND Рост=+1.86') == {
+        'left': {
+            'id': 'Пол',
+            'literal': '-*/М',
+            'op': '=',
+            'type': 'leaf'
+        },
+        'op': 'AND',
+        'right': {
+            'id': 'Рост',
+            'literal': 1.86,
+            'op': '=',
+            'type': 'leaf'
+        },
+        'type': 'node'
+    }
+
+
+def test_parse_and_or_brackets_0():
     assert parse('Пол="М" AND (Возраст>25 OR Стаж>.5)') == {
         'type': 'node', 'op': 'AND',
         'left': {'type': 'leaf', 'op': '=', 'id': 'Пол', 'literal': "М"},
@@ -165,7 +203,7 @@ def test_example_and_or_brackets_0():
     }
 
 
-def test_example_and_or_brackets_1():
+def test_parse_and_or_brackets_1():
     assert parse('(Пол="М" AND Рост=1.86) AND (Возраст>25 OR Стаж>.5)') == {
         "op": "AND",
         "type": "node",
@@ -204,7 +242,7 @@ def test_example_and_or_brackets_1():
     }
 
 
-def test_example_and_or_brackets_2():
+def test_parse_and_or_brackets_2():
     assert parse('((((((Пол="М" AND Рост=1.86))) AND Возраст>25 OR Стаж>.5)))') == {
         "op": "OR",
         "type": "node",
@@ -243,7 +281,7 @@ def test_example_and_or_brackets_2():
     }
 
 
-def test_example_and_or_brackets_3():
+def test_parse_and_or_brackets_3():
     assert parse('((Пол="М" AND ((Рост=1.86) AND (Возраст>25))) OR Стаж>.5)') == {
         "op": "OR",
         "type": "node",
@@ -282,47 +320,65 @@ def test_example_and_or_brackets_3():
     }
 
 
-def test_example_exception_brackets_1():
+def test_parse_exception_brackets_1():
     with pytest.raises(SyntaxError) as ex_info:
         parse('(Пол="М")) AND Рост=1.86')
     assert ex_info.value.args[0] == "unmatched ')'"
 
 
-def test_example_exception_brackets_2():
+def test_parse_exception_brackets_2():
     with pytest.raises(SyntaxError) as ex_info:
         parse('(Пол="М") (AND Рост=1.86)')
     assert ex_info.value.args[0] == "invalid syntax"
 
 
-def test_example_exception_lop_plus():
+def test_parse_exception_lop_plus():
     with pytest.raises(ValueError) as ex_info:
         parse('Пол="М" + Рост=1.86')
     assert ex_info.value.args[0] == "Query contains wrong operator(s)"
 
 
-def test_example_exception_op_plus_minus():
+def test_parse_exception_op_plus_minus():
     with pytest.raises(ValueError) as ex_info:
         parse('Пол+"М" AND Рост-1.86')
     assert ex_info.value.args[0] == "Query contains wrong operator(s)"
 
 
-def test_example_exception_eq():
+def test_parse_exception_op_minus():
+    with pytest.raises(SyntaxError) as ex_info:
+        parse('Пол="М" AND Рост-=1.86')
+    assert ex_info.value.args[0] == "invalid syntax"
+
+
+def test_parse_exception_eq():
     with pytest.raises(SyntaxError) as ex_info:
         parse('Пол=="М" AND Рост=1.86')
     assert ex_info.value.args[0] == "invalid syntax"
 
 
-def test_example_exception_dict():
+def test_parse_exception_dict():
     with pytest.raises(SyntaxError) as ex_info:
         parse('{Пол=="М"} AND Рост=1.86')
     assert ex_info.value.args[0] == "invalid syntax"
 
 
-def test_example_exception_list():
+def test_parse_exception_list():
     with pytest.raises(SyntaxError) as ex_info:
         parse('Пол=="М" AND [Рост=1.86]')
     assert ex_info.value.args[0] == "invalid syntax"
 
 
-def test_example_empty():
+def test_parse_exception_mul_float():
+    with pytest.raises(SyntaxError) as ex_info:
+        parse('Пол="М" AND Рост=*1.86')
+    assert ex_info.value.args[0] == "invalid syntax"
+
+
+def test_parse_exception_minus_string():
+    with pytest.raises(TypeError) as ex_info:
+        parse('Пол=-"М" AND Рост=1.86')
+    assert ex_info.value.args[0] == "bad operand type for unary -: 'str'"
+
+
+def test_parse_empty():
     assert parse('') == {}
